@@ -102,45 +102,44 @@ void textFile(FILE *readPtr)
     } // end else
 } // end function textFile
 
-// update balance in record
 void updateRecord(FILE *fPtr)
 {
     unsigned int account; // account number
     double transaction;   // transaction amount
-    // create clientData with no information
     struct clientData client = {0, "", "", 0.0};
 
-    // obtain number of account to update
     printf("%s", "Enter account to update ( 1 - 100 ): ");
-    scanf("%d", &account);
+    scanf("%u", &account);
 
-    // move file pointer to correct record in file
+    // 1. Move file pointer to the EXACT record location from the START of the file
     fseek(fPtr, (account - 1) * sizeof(struct clientData), SEEK_SET);
-    // read record from file
+
+    // 2. Read the record into the client struct
     fread(&client, sizeof(struct clientData), 1, fPtr);
+
     // display error if account does not exist
     if (client.acctNum == 0)
     {
         printf("Account #%d has no information.\n", account);
     }
     else
-    { // update record
+    {
         printf("%-6d%-16s%-11s%10.2f\n\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
         // request transaction amount from user
         printf("%s", "Enter charge ( + ) or payment ( - ): ");
         scanf("%lf", &transaction);
-        client.balance += transaction; // update record balance
+        client.balance += transaction; // update balance logic
 
-        printf("%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName, client.balance);
+        printf("New Balance: %10.2f\n", client.balance);
 
-        // move file pointer to correct record in file
-        // move back by 1 record length
-        fseek(fPtr, sizeof(struct clientData), SEEK_CUR);
-        // write updated record over old record in file
+        // 3. RE-SEEK to the same record location to ensure we overwrite the correct spot
+        fseek(fPtr, (account - 1) * sizeof(struct clientData), SEEK_SET);
+
+        // 4. Write the updated record back to the file
         fwrite(&client, sizeof(struct clientData), 1, fPtr);
-    } // end else
-} // end function updateRecord
+    }
+}
 
 // delete an existing record
 void deleteRecord(FILE *fPtr)
