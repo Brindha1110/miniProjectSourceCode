@@ -128,6 +128,7 @@ void updateRecord(FILE *fPtr)
 
         
         fwrite(&client, sizeof(struct clientData), 1, fPtr);
+        fflush(fPtr);
     }
 }
 
@@ -159,6 +160,7 @@ void deleteRecord(FILE *fPtr)
         fwrite(&blankClient, sizeof(struct clientData), 1, fPtr);
     } 
 } 
+
 
 // create and insert record
 void newRecord(FILE *fPtr)
