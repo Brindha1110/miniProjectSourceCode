@@ -122,7 +122,13 @@ void updateRecord(FILE *fPtr)
             printf("Invalid transaction amount.\n");
             return;
         }
-        client.balance += transaction; // update balance logic
+        if (client.balance + transaction < 0)
+        {
+            printf("Insufficient balance.\n");
+            return;
+        }
+
+        client.balance += transaction;
 
         printf("New Balance: %10.2f\n", client.balance);
 
