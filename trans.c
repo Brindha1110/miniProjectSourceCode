@@ -117,7 +117,11 @@ void updateRecord(FILE *fPtr)
         printf("%-6d%-16s%-11s%10.2f\n\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
         printf("%s", "Enter charge ( + ) or payment ( - ): ");
-        scanf("%lf", &transaction);
+        if (scanf("%lf", &transaction) != 1)
+        {
+            printf("Invalid transaction amount.\n");
+            return;
+        }
         client.balance += transaction; // update balance logic
 
         printf("New Balance: %10.2f\n", client.balance);
