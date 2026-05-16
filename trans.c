@@ -72,17 +72,20 @@ void textFile(FILE *readPtr)
     FILE *writePtr = fopen("accounts.txt", "w");
     struct clientData client = {0};
 
-    if (writePtr == NULL) {
+    if (writePtr == NULL)
+    {
         puts("File could not be opened.");
-    } 
-    else {
+    }
+    else
+    {
         rewind(readPtr); // Start at the beginning
         fprintf(writePtr, "%-6s%-16s%-11s%10s\n", "Acct", "Last Name", "First Name", "Balance");
 
-        while (fread(&client, sizeof(struct clientData), 1, readPtr) == 1) 
+        while (fread(&client, sizeof(struct clientData), 1, readPtr) == 1)
         {
-            if (client.acctNum != 0) {
-                fprintf(writePtr, "%-6d%-16s%-11s%10.2f\n", 
+            if (client.acctNum != 0)
+            {
+                fprintf(writePtr, "%-6d%-16s%-11s%10.2f\n",
                         client.acctNum, client.lastName, client.firstName, client.balance);
             }
         }
@@ -94,20 +97,17 @@ void textFile(FILE *readPtr)
 
 void updateRecord(FILE *fPtr)
 {
-    unsigned int account; 
+    unsigned int account;
     double transaction;
     struct clientData client = {0, "", "", 0.0};
 
     printf("%s", "Enter account to update ( 1 - 100 ): ");
     scanf("%u", &account);
 
-    
     fseek(fPtr, (account - 1) * sizeof(struct clientData), SEEK_SET);
 
-    
     fread(&client, sizeof(struct clientData), 1, fPtr);
 
-   
     if (client.acctNum == 0)
     {
         printf("Account #%d has no information.\n", account);
@@ -116,22 +116,18 @@ void updateRecord(FILE *fPtr)
     {
         printf("%-6d%-16s%-11s%10.2f\n\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
-        
         printf("%s", "Enter charge ( + ) or payment ( - ): ");
         scanf("%lf", &transaction);
         client.balance += transaction; // update balance logic
 
         printf("New Balance: %10.2f\n", client.balance);
 
-        
         fseek(fPtr, (account - 1) * sizeof(struct clientData), SEEK_SET);
 
-        
         fwrite(&client, sizeof(struct clientData), 1, fPtr);
         fflush(fPtr);
     }
 }
-
 
 void deleteRecord(FILE *fPtr)
 {
@@ -156,11 +152,10 @@ void deleteRecord(FILE *fPtr)
     { // delete record
         // move file pointer to correct record in file
         fseek(fPtr, (accountNum - 1) * sizeof(struct clientData), SEEK_SET);
-        // replace existing record with blank record
         fwrite(&blankClient, sizeof(struct clientData), 1, fPtr);
-    } 
-} 
-
+        printf("Account #%d deleted successfully.\n", accountNum);
+    }
+}
 
 // create and insert record
 void newRecord(FILE *fPtr)
